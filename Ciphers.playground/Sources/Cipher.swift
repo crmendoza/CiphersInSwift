@@ -3,8 +3,7 @@ import Foundation
 public class Cipher {
     
     public static func atbashCipher(_ plainText: String) -> String {
-        let alphabet = Array("abcdefghijklmnopqrstuvwxyz")
-        let cipher = zip(alphabet, alphabet.reversed()).reduce([String: String]()) { (dict, arg1) -> [String: String] in
+        let cipher = zip(CipherText.alphabet, CipherText.alphabet.reversed()).reduce([String: String]()) { (dict, arg1) -> [String: String] in
             let (key, value) = arg1
             var dict = dict
             dict[String(key)] = String(value)
@@ -18,15 +17,29 @@ public class Cipher {
     }
     
     public static func atbashCipher2(_ plainText: String) -> String {
-        let alphabet = Array("abcdefghijklmnopqrstuvwxyz")
         let cipherText =  Array(plainText.lowercased().replacingOccurrences(of: " ", with: "")).compactMap { (char) -> String? in
-            if let index = alphabet.index(of: char) {
-                return String(alphabet[alphabet.count - 1 - index])
+            if let index = CipherText.alphabet.index(of: char) {
+                return String(CipherText.alphabet[CipherText.alphabet.count - 1 - index])
             }
             return nil
         }
         
         return cipherText.joined()
+    }
+    
+    public static func rot13(_ plainText: String) -> String {
+        return Cipher.ceasarCipher(key: 13, plainText)
+    }
+    
+    public static func ceasarCipher(key: Int, _ plainText: String) -> String {
+        let formatted = plainText.lowercased().replacingOccurrences(of: " ", with: "")
+        let cipherText = Array(formatted).compactMap { (char) -> String? in
+            if let index = CipherText.alphabet.index(of: char) {
+                return String(CipherText.alphabet[(index+key) % CipherText.alphabet.count])
+            }
+            return nil
+            }.joined()
+        return cipherText
     }
     
 }
